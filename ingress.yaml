@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonarqube-ingress
+  namespace: sonarqube
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true" 
+    nginx.org/mergeable-ingress-type: "master"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - sonar.simplereact.online
+    secretName: tls-secret
+  rules:
+  - host: sonar.simplereact.online  # Replace with your domain
+    http:
+      paths:
+      - path: /sonarqube
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarqube-service
+            port:
+              number: 9000
+
